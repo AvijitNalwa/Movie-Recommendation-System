@@ -1,5 +1,5 @@
 # Movie Recommendation System
-A machine learning model that detects your taste in movies and suggests the ones you would like the most.
+A machine learning model that detects your taste in movies and suggests new personalized recommendations to watch. 
 
 # Method
 I use Collaborative Filtering via Singular Value Decomposition (SVD) implemented well by the Surprise (http://surpriselib.com/) python library.  
