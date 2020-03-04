@@ -9,7 +9,7 @@ import pickle
 
 
 # function to find movies in the database based on user selection
-def fuzzy_matching(fav_movie, movies_id_dc, *args):
+def movie_matching(fav_movie, movies_id_dc, *args):
     verbose = True
     matches = []
     # get match by comparing database movies with user input string
@@ -27,7 +27,7 @@ def fuzzy_matching(fav_movie, movies_id_dc, *args):
     return matches[0][1]
 
 
-def make_recommendation(data, usr_pref, user_data, user_id):
+def find_recommendations(data, usr_pref, user_data, user_id):
     # adding the user preferences dataframe to our train data
     df2 = usr_pref
     data = data.append(df2)
@@ -62,14 +62,6 @@ def make_recommendation(data, usr_pref, user_data, user_id):
 
     # making the function return the list containing our predictions
     return predictions
-
-def get_top_n(predictions, id_movies_dc, *args):
-
-    # variable to store
-    top_n = []
-    for prediction in predictions:
-        top_n.append((id_movies_dc[int(prediction.iid)], prediction.est))
-    return top_n
 
 # loading the movie data that will allow us to create our title, movieID dictionaries
 main_path ='/Users/Avijit/Documents/GitHub/MyDataSciencePortfolio/movie_recommender/Movie SysRec/ml-latest/'
@@ -116,14 +108,14 @@ while i < nofrates:
     print('You selected:', fav_movie)
 
     # use the matching function to find the closest movie to the user input in the database
-    idi = fuzzy_matching(fav_movie, movies_id_dc=movies_id_dc)
+    idi = movie_matching(fav_movie, movies_id_dc=movies_id_dc)
     # loop to handle error if there is no match
     while idi == None:
         # ask user again, hopefully a match is found
         print("Please enter a different movie")
         fav_movie = str(input())
         # call matching function again to find a match, this repeats till a match occurs
-        idi = fuzzy_matching(fav_movie, movies_id_dc=movies_id_dc)
+        idi = movie_matching(fav_movie, movies_id_dc=movies_id_dc)
     # creating a variable to store the movieID for the user entered movie, our dict that maps titles to ids gives a one element list
     idx = idi[0]
     # add the movieID to the user entered movieID list
@@ -167,7 +159,7 @@ user_data['userId'] = data['userId'].max()+1
 user_data = user_data[['userId', 'movieId']]
 
 # calling the recommendation function and storing the list of predictions in a variable
-predictions = make_recommendation(data=data, usr_pref= usr_pref, user_data=user_data,user_id=user_id)
+predictions = find_recommendations(data=data, usr_pref= usr_pref, user_data=user_data,user_id=user_id)
 
 # creating a dataframe and populating it with the models predicitons data
 result2 = pd.DataFrame(data=predictions)
