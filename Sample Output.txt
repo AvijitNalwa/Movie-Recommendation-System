@@ -1,0 +1,66 @@
+An example of the 'Movie Recommendation Generator.py' file's output 
+
+Enter the number of movies you will rate
+3
+Enter the title of movie 1 below
+National Treasure
+You selected: National Treasure
+Found possible matches in our database: ['National Treasure (2004)', 'Functional Fitness', 'African Treasure (1952)']
+
+Enter your rating (range:1-5, 0.5 increments) for movie 1 below
+4.5
+Enter the title of movie 2 below
+Arrival
+You selected: Arrival
+Found possible matches in our database: ['Arrival (2016)']
+
+Enter your rating (range:1-5, 0.5 increments) for movie 2 below
+5
+Enter the title of movie 3 below
+Harry Potter Stone
+You selected: Harry Potter Stone
+Oops! No match is found
+Please enter a different movie
+Harry Potter and the Sorcerors Stone
+Found possible matches in our database: ['Harry Potter and the Order of the Phoenix (2007)', 'Harry Potter and the Chamber of Secrets (2002)', 'Harry Potter and the Goblet of Fire (2005)', 'Harry Potter and the Prisoner of Azkaban (2004)', 'Warrior and the Sorceress, The (1984)', 'Harry Potter and the Half-Blood Prince (2009)', 'Harry Potter and the Deathly Hallows: Part 2 (2011)', 'Harry Potter and the Deathly Hallows: Part 1 (2010)', 'Sword and the Sorcerer, The (1982)']
+
+Enter your rating (range:1-5, 0.5 increments) for movie 3 below
+3.5
+Enter the total number of movie recommendations you want
+20
+Finding the best recommendations based on your taste using machine learning
+......
+
+Processing epoch 0
+Processing epoch 1
+Processing epoch 2
+Processing epoch 3
+Processing epoch 4
+Processing epoch 5
+Processing epoch 6
+Processing epoch 7
+Processing epoch 8
+Processing epoch 9
+                                                  Titles  Your Predicted Rating
+4110                                  ['Memento (2000)']               4.580891
+38757                                ['Rejected (2000)']               4.570317
+46                       ['Seven (a.k.a. Se7en) (1995)']               4.557810
+315                 ['Shawshank Redemption, The (1994)']               4.556604
+38782                        ['Band of Brothers (2001)']               4.548490
+20515       ['Death on the Staircase (Soupçons) (2004)']               4.531122
+42409                                 ['AlphaGo (2017)']               4.526061
+41394                          ['Blue Planet II (2017)']               4.523262
+20546            ['Mugabe and the White African (2009)']               4.514403
+36939                                 ['Arrival (2016)']               4.511384
+2472                              ['Matrix, The (1999)']               4.504777
+43375               ["Won't You Be My Neighbor? (2018)"]               4.504512
+1169   ['Raiders of the Lost Ark (Indiana Jones and t...               4.480526
+7812   ['Human Condition I, The (Ningen no joken I) (...               4.479689
+2857                               ['Fight Club (1999)']               4.478448
+38890                         ['Planet Earth II (2016)']               4.474355
+1184                                    ['Alien (1979)']               4.472445
+31274                               ['Spotlight (2015)']               4.468161
+587                 ['Silence of the Lambs, The (1991)']               4.464530
+39053                                         ['Cosmos']               4.461224
+
+Process finished with exit code 0
