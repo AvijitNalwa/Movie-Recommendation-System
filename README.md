@@ -2,7 +2,7 @@
 A machine learning model that detects your taste in movies and suggests new personalized recommendations to watch. 
 
 # Method
-I use Collaborative Filtering via Singular Value Decomposition (SVD) implemented well by the Surprise (http://surpriselib.com/) python library.  
+I use Collaborative Filtering via Singular Value Decomposition (SVD) & Stochastic Gradient Descent implemented well by the Surprise (http://surpriselib.com/) python library.  
 
 # Data
 The Dataset: MovieLens Full Dataset (https://grouplens.org/datasets/movielens/latest/)
