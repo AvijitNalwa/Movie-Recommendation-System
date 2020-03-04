@@ -6,9 +6,9 @@
 
 # Data
  The Dataset: MovieLens Full Dataset (https://grouplens.org/datasets/movielens/latest/)
-Numbers
+ Numbers
 27,000,000 ratings by 280,000 users for 58,000 movies 
-I use the ratings, and movies files. Though this original dataset is huge, I add restrictions to reach a much smaller size    containing more frequently rated movies, and more frequently rating users. Along with this I preprocess the data and save it to a pickle file for ease of use through the project. (Find the restriction & processing in the Data Pre-Processing.py file)
+ I use the ratings, and movies files. Though this original dataset is huge, I add restrictions to reach a much smaller size containing more frequently rated movies, and more frequently rating users. Along with this I preprocess the data and save it to a pickle file for ease of use through the project. (Find the restriction & processing in the Data Pre-Processing.py file)
 
 # Model
  I use the surprise implementation of the SVD model based on Simon Funk's Netflix Prize approach. I also built a model using SVD++(pp) which accounts for implicit ratings (based on the assumption that rating/not rating a movie is an indication of some preference). However, after testing both approaches I found that the more traditional SVD approach yielded more efficient and better generalizing results. 
