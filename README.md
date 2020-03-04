@@ -6,7 +6,9 @@
 
 # Data
  The Dataset: MovieLens Full Dataset (https://grouplens.org/datasets/movielens/latest/)
- Numbers
+ 
+ Numbers:
+ 
 27,000,000 ratings by 280,000 users for 58,000 movies 
  I use the ratings, and movies files. Though this original dataset is huge, I add restrictions to reach a much smaller size containing more frequently rated movies, and more frequently rating users. Along with this I preprocess the data and save it to a pickle file for ease of use through the project. (Find the restriction & processing in the Data Pre-Processing.py file)
 
