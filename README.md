@@ -23,9 +23,9 @@ I use the ratings, and movies files. Though this original dataset is huge, I add
  I referred/used certain aspects of the following resources:
  
  https://grouplens.org/datasets/movielens/latest/
- http://surpriselib.com/
- https://stackoverflow.com/
- https://github.com/AvijitNalwa/MyDataSciencePortfolio/tree/master/movie_recommender
+http://surpriselib.com/
+https://stackoverflow.com/
+https://github.com/AvijitNalwa/MyDataSciencePortfolio/tree/master/movie_recommender
 
 
 
