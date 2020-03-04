@@ -17,30 +17,16 @@ from sklearn.metrics import mean_squared_error
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+# function to find movies in the database based on user selection
 def fuzzy_matching(fav_movie, movies_id_dc, *args):
-    """
-    return the closest match via fuzzy ratio. If no match found, return None
-
-    Parameters
-    ----------
-    mapper: dict, map movie title name to index of the movie in data
-
-    fav_movie: str, name of user input movie
-
-    verbose: bool, print log if True
-
-    Return
-    ------
-    index of the closest match
-    """
     verbose = True
     matches = []
-    # get match
+    # get match by comparing database movies with user input string
     for key in movies_id_dc:
         ratio = fuzz.ratio(str(key).lower(), fav_movie.lower())
         if ratio >= 60:
             matches.append((key, movies_id_dc[key], ratio))
-    # sort
+    # sort matches based on how similar they are
     matches = sorted(matches, key=lambda x: x[2])[::-1]
     if not matches:
         print('Oops! No match is found')
@@ -51,239 +37,201 @@ def fuzzy_matching(fav_movie, movies_id_dc, *args):
 
 
 def make_recommendation(data, usr_pref, user_data, user_id):
-    """
-    return top n similar movie recommendations based on user's input movie
-
-
-    Parameters
-    ----------
-    model_knn: sklearn model, knn model
-
-    data: movie-user matrix
-
-    mapper: dict, map movie title name to index of the movie in data
-
-    fav_movie: str, name of user input movie
-
-    n_recommendations: int, top n recommendations
-
-    Return
-    ------
-    list of top n similar movie recommendations
-    """
-    # get input movie index
-    #data = data.sample(frac=0.1, random_state=7)
-    #d = {'userId': [user_id], 'movieId': [idx], 'rating': [5.0]}
+    # adding the user preferences dataframe to our train data
     df2 = usr_pref
-    #pd.DataFrame(d)
-    new_user_data = pd.read_csv('new user ratings.csv')
-    #df2 = df2[['userId', 'movieId']]
-    #df2 = df2.set_index("userId", inplace=True)
-    #print(df2.head())
     data = data.append(df2)
     data.reset_index(inplace=True, drop=True)
-    #print(data.tail())
 
-    # populating test data for user predictions
-
-    #user_data.set_index("userId", inplace=True)
-
+    # making movielens data compatible with the model by creating a reader object
     reader = Reader(rating_scale=(1, 5))
-    # reader2 = Reader()
     data_dr = Dataset.load_from_df(data[['userId', 'movieId', 'rating']], reader)
+
+    # loading our model from the dump that was done in our model creation and tuning python file
     model = dump.load('Complete SVD v1.12')
     algo = model[1][1]
-    user_dr = Dataset.load_from_df(new_user_data[['userId', 'movieId', 'rating']], reader)
-    #algo = surprise.SVD(n_factors = 10, n_epochs=5, lr_all=0.004, reg_all=0.04, verbose=True)
-    #algo = KNNWithZScore(k=40, min_k=1, sim_options={'name': 'pearson_baseline', 'user_based': False}, verbose=True,)
+
+    # training the model on the dataset that now includes the users preferences
     algo.fit(data_dr.build_full_trainset())
+
+    # list to hold the models predictions
     predictions = []
-    #user_ar = user_data.to_numpy()
+
+    # getting arrays that can be traversed of the user id, movie (item) id,
+    # these are used to apply the predict function
     uids = user_data['userId'].to_numpy()
     iids = user_data['movieId'].to_numpy()
+
+    # counting variable
     i=0
+
+    # loop to add predictions for each uid, movieid pair to the predictions list defined above
     while i < len(uids):
         predictions.append(algo.predict(uid=uids[i], iid=iids[i]))
         i+=1
+
+    # making the function return the list containing our predictions
     return predictions
 
 def get_top_n(predictions, id_movies_dc, *args):
-    '''Return the top-N recommendation for each user from a set of predictions.
 
-    Args:
-        predictions(list of Prediction objects): The list of predictions, as
-            returned by the test method of an algorithm.
-        n(int): The number of recommendation to output for each user. Default
-            is 10.
-
-    Returns:
-    A dict where keys are user (raw) ids and values are lists of tuples:
-        [(raw item id, rating estimation), ...] of size n.
-    '''
-
-    # i=0
-    # results = []
-    # while i <len(predictions):
-    #     results.append((predictions[i][1], predictions[i][2]))
-    #
-    # sorted_est = sorted(results, key=lambda tup: tup[0])
-    # result = sorted_est[:n]
-    # return result
-
-
-    # First map the predictions to each user.
+    # variable to store
     top_n = []
     for prediction in predictions:
         top_n.append((id_movies_dc[int(prediction.iid)], prediction.est))
-    #top_n.sort(reverse=True)
-
-
-
-    # # Then sort the predictions for each user and retrieve the k highest ones.
-    # top_n[uid].sort(key=lambda x: x[1], reverse=True)
-    # top_n[uid] = top_n[uid][:n]
     return top_n
 
-    # # First map the predictions to each user.
-    # top_n = defaultdict(list)
-    # uid = predictions[0][0]
-    #
-    # for iid, true_r, est, _ in predictions:
-    #     top_n.append((iid, est))
-    #
-    # # Then sort the predictions for each user and retrieve the k highest ones.
-    # for est in top_n.items():
-    #     est.sort(key=lambda x: x[1], reverse=True)
-    #     top_n[uid] = user_ratings[:n]
-    #
-    # return top_n
-
-
-
-
+# loading the movie data that will allow us to create our title, movieID dictionaries
 main_path ='/Users/Avijit/Documents/GitHub/MyDataSciencePortfolio/movie_recommender/Movie SysRec/ml-latest/'
 movies = pd.read_csv(main_path+'movies.csv')
+
+# loading our pickle file containing the dataset resulting from our processing steps in the data prep python file
 data = pd.read_pickle("filtered dataset.pkl")
+
+# making sure we do not have any duplicate movie title entries in the movies data so that we can create a one to one dictionary
 movies.drop_duplicates(subset =['title'], inplace=True)
-#print(movies.title.head())
+
+# reducing the movies dataframe to one that only contains movies that are also in our main rating data file
 movies = movies[movies.movieId.isin(list(data.movieId))]
+
+# getting rid of the genres column from the movies dataframe as it is not going to be used directly in this model
 movies = movies.drop(['genres'], axis=1)
+
+# drop any entries that have a nan value
 movies.dropna(inplace=True)
-#data.reset_index(inplace=True, drop=True)
-# print(data.head())
-# print(data.shape)
 
-#movie_id_dc = pd.Series(movies.movieId,index=movies.title).to_dict()
+# creating an id -> title dictionary for the movies by manipulating the dataframe (change index, then transpose)
 id_movies_dc = movies.set_index('movieId').T.to_dict('list')
+
+# creating a title -> id dictionary for the movies by manipulating the dataframe (change index, then transpose)
 movies_id_dc = movies.set_index('title').T.to_dict('list')
-#movies_id_dc = pd.Series(movies['movieId'], index=movies['title']).to_dict()
 
-#id_movies_dc = pd.Series(movies.title,index=movies['movieId']).to_dict()
-#movies_id_dc = {id_movies_dc[k] : k for k in id_movies_dc}
-#movies_id_dc = {v: k for k, v in id_movies_dc.items()}
-#print(id_movies_dc[318])
-#movies_id_dc = {k: id_movies_dc[k] for k in id_movies_dc if not isnan(k)}
-# print(id_movies_dc)
-#print([id_movies_dc[64997]])
-#print(movies_id_dc['Jumanji (1995)'])
-
+# User prompt to decide upper limit for preference detecting data
 print("Enter the number of movies you will rate")
 nofrates = int(input())
 
+# list variables to store user inputs that will be used to populate preference dataframe
 usr_movies =[]
 usr_rates = []
 usr_iids = []
+
+# counting vairable for the while loop
 i=0
 
 while i < nofrates:
     print("Enter the title of movie {} below".format(i+1))
     fav_movie = str(input())
+    # add movie to the list
     usr_movies.append(fav_movie)
     print('You selected:', fav_movie)
+
+    # use the matching function to find the closest movie to the user input in the database
     idi = fuzzy_matching(fav_movie, movies_id_dc=movies_id_dc)
+    # loop to handle error if there is no match
     while idi == None:
+        # ask user again, hopefully a match is found
         print("Please enter a different movie")
         fav_movie = str(input())
+        # call matching function again to find a match, this repeats till a match occurs
         idi = fuzzy_matching(fav_movie, movies_id_dc=movies_id_dc)
+    # creating a variable to store the movieID for the user entered movie, our dict that maps titles to ids gives a one element list
     idx = idi[0]
+    # add the movieID to the user entered movieID list
     usr_iids.append(idx)
+
+    # Accept rating for the chosen movie
     print("Enter your rating (range:1-5, 0.5 increments) for movie {} below".format(i+1))
     rating = str(input())
+
+    # add the rating to the user entered movie ratings list
     usr_rates.append(rating)
+    # increment the counting variable so that the the input while loop breaks as desired
     i+=1
 
+# accept the number of recommendations that should be printed
 print("Enter the total number of movie recommendations you want")
 n = int(input())
 
+# creating a preference dictionary containg data titles and the lists that were populated above
 preference = {'userId': (data['userId'].max()+1), 'movieId': usr_iids , "rating": usr_rates}
 
+# creating a pandas dataframe and populating it with data from the preferences list above, keys are column names, values are column data
 usr_pref = pd.DataFrame(preference)
-#print(idx)
-# inference
+
 print('Finding the best recommendations based on your taste using machine learning')
-print('......\n')
+print('..........\n')
+
+# creating a dictionary to help create the user_data dataframe
 d = {'movieId': []}
+# creating the user_data dataframe that is used to generate predicitons
 user_data = pd.DataFrame(d)
+
+# populating the testing dataframe with movieIds from our dataset
 user_data['movieId'] = movies['movieId']
+
+# creating a new, unique user by finding a userId that is not used yet
 user_id = data['userId'].max()+1
+# setting the userId column of the test dataset to the new unique users uid
 user_data['userId'] = data['userId'].max()+1
+# reordering test dataframe columns
 user_data = user_data[['userId', 'movieId']]
-#user_data.set_index("userId", inplace=True)
-# print(user_data.head())
 
-
+# calling the recommendation function and storing the list of predictions in a variable
 predictions = make_recommendation(data=data, usr_pref= usr_pref, user_data=user_data,user_id=user_id)
-#print(predictions[0:10])
 
+# creating a dataframe and populating it with the models predicitons data
 result2 = pd.DataFrame(data=predictions)
+
+# creating a list variable to hold our recommended movie's titles
 titles = []
+
+# adding the movie title of each recommended movie to our list variable defined above
 for movieID in result2['iid'].values:
+    # we use our movieID -> movie title dictionary and use the movieID as the key value, then convert the result to a string and append
     titles.append(str(id_movies_dc[movieID]))
 
-# helping less popular movies rise up the list by penalizing the estimated rating of a subset of the most popular ones
+# ** helping less popular movies rise up the list by penalizing the estimated rating of a subset of the most popular ones **
+# getting the rating frequency for each movie in the form of a dataframe
 mov_rating_f = pd.DataFrame(data.groupby('movieId').size(), columns=['count'])
+
+# setting a threshold for ratign frequency (as a measure of popularity), we used this number after using the .describe() function on the frequency dataframe above
 popularity_thres = 3000
+
+# getting a list of the indexs of the popular movies
 popular_movies_i = list(set(mov_rating_f.query('count >= @popularity_thres').index))
+
+# creating a DataFrame containing only the popular movies using the index list
 pop_movies = data[data.movieId.isin(popular_movies_i)]
+
+# simplifying notation by storing the popular movie ids column in a variable
 pmovids = pop_movies['movieId']
 
+# **** PENALTY, we set the rating penalty we want to impose on very popular movies so that relatively less popular, yet tasteful movies can rise to the top ***
+# play around with the penalty value to shift the number of popular movies in the top recommendations
 penalty = 0.3
+
+# counting variable to traverse the arays of estimated ratings and movie (item) ids from the dataframe containing recommendations
 p=0
+
+# we loop through every movieid
 for id in result2.iid.values:
+    # if the movie id is in the array of popular movie ids
     if result2.iid[p] in pmovids.values:
+        # apply the penalty to the corresponding rating estimation (prediction)
         result2.est.values[p] = result2.est.values[p] - penalty
+    # otherwise leave unpopular movies unaffected by the penalty
+    # increment the counting variable to continue traversing arrays
     p+=1
 
+# adding the Titles column to the results2 dataframe, adding the recommendation titles as values of the column
 result2['Titles'] = titles
+# sort the recommendations by the predicted rating to make sure the best recommendations are on top
 result2.sort_values(by=['est'], inplace=True, ascending=False)
+# reducing the results2 dataframe to just the title and estimated ratings column
 result2=result2[['Titles', 'est']]
+# renaming the 'est' column to a more intuitive name
 result2 = result2.rename(columns={"est": "Your Predicted Rating"})
+# writing the final, sorted & titled recommendations to a csv file
 result2.to_csv('Movie Recommendations.csv')
+
+# print out the top n results by using the head function on the dataframe
 print(result2.head(n))
-
-
-# result2 = result2['iid', 'est']
-# result2.sort_values(by=['est'])
-
-# result2['Titles'] = id_movies_dc[result2['iid']]
-# result = get_top_n(predictions, id_movies_dc=id_movies_dc)
-#
-# a = pd.DataFrame(result, columns =['movie', 'score'])
-#
-# def sorted(a):
-#     return a.sort_values(by=['score'],  ascending=False)
-#
-# a['score'].apply(pd.to_numeric)
-# a.drop_duplicates(subset="movie", keep='first', inplace=True)
-# a=sorted(a)
-# #a.sort_values(by=['score'])
-# print(a.head(n))
-# a.to_csv('recommended movies.csv')
-# for t in result:
-#     print(id_movies_dc[t[0]], t[1])
-
-
-#for uid, user_ratings in top_n.items():
-    #print(uid, [id_movies_dc[iid] for (iid, _) in user_ratings])
-
-
