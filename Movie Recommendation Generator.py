@@ -1,21 +1,12 @@
 import pandas as pd
 from surprise import Reader,Dataset, accuracy, dump, SVDpp
-from surprise import prediction_algorithms, KNNWithZScore
+from surprise import prediction_algorithms
 import surprise
-from surprise.model_selection import cross_validate, GridSearchCV
 import numpy as np
 from fuzzywuzzy import fuzz
 from math import isnan
-from operator import itemgetter
-from collections import defaultdict
 import pickle
-import scipy
-#from funk_svd import SVD
-from sklearn.metrics import mean_absolute_error
-from sklearn.metrics import mean_squared_error
-# visualization imports
-import seaborn as sns
-import matplotlib.pyplot as plt
+
 
 # function to find movies in the database based on user selection
 def fuzzy_matching(fav_movie, movies_id_dc, *args):
