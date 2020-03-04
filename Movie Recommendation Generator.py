@@ -64,7 +64,7 @@ def find_recommendations(data, usr_pref, user_data, user_id):
     return predictions
 
 # loading the movie data that will allow us to create our title, movieID dictionaries
-main_path ='/Users/Avijit/Documents/GitHub/MyDataSciencePortfolio/movie_recommender/Movie SysRec/ml-latest/'
+main_path ='FILEPATH to the folder containing the Movielens data'
 movies = pd.read_csv(main_path+'movies.csv')
 
 # loading our pickle file containing the dataset resulting from our processing steps in the data prep python file
