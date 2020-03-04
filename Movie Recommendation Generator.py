@@ -97,7 +97,7 @@ usr_movies =[]
 usr_rates = []
 usr_iids = []
 
-# counting vairable for the while loop
+# counting variable for the while loop
 i=0
 
 while i < nofrates:
@@ -148,8 +148,23 @@ d = {'movieId': []}
 # creating the user_data dataframe that is used to generate predicitons
 user_data = pd.DataFrame(d)
 
+# list to hold the test ids
+test_ids = []
+
+# counter variable to traverse
+k=0
+
+# simplifying notation
+all_ids = movies['movieId'].to_numpy()
+
+# loop to add movie ids to the test list only if they were not entered by the user
+while k < len(movies['movieId'].to_numpy()):
+    if movies.movieId.to_numpy()[k] not in usr_iids:
+        test_ids.append(all_ids[k])
+    k+=1
+
 # populating the testing dataframe with movieIds from our dataset
-user_data['movieId'] = movies['movieId']
+user_data['movieId'] = test_ids
 
 # creating a new, unique user by finding a userId that is not used yet
 user_id = data['userId'].max()+1
