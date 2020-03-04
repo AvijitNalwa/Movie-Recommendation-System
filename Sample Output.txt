@@ -21,7 +21,7 @@ Harry Potter Stone
 You selected: Harry Potter Stone
 Oops! No match is found
 Please enter a different movie
-Harry Potter and the Sorcerors Stone
+Harry Potter and the Sorcerors Stone  #an example of fuzzy matching
 Found possible matches in our database: ['Harry Potter and the Order of the Phoenix (2007)', 'Harry Potter and the Chamber of Secrets (2002)', 'Harry Potter and the Goblet of Fire (2005)', 'Harry Potter and the Prisoner of Azkaban (2004)', 'Warrior and the Sorceress, The (1984)', 'Harry Potter and the Half-Blood Prince (2009)', 'Harry Potter and the Deathly Hallows: Part 2 (2011)', 'Harry Potter and the Deathly Hallows: Part 1 (2010)', 'Sword and the Sorcerer, The (1982)']
 
 Enter your rating (range:1-5, 0.5 increments) for movie 3 below
@@ -64,3 +64,5 @@ Processing epoch 9
 39053                                         ['Cosmos']               4.461224
 
 Process finished with exit code 0
+
+Note: Download the Movie Recommendations.csv file to view predicted ratings with titles for all movies in the restricted dataset. 
