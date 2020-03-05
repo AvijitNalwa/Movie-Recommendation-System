@@ -66,3 +66,4 @@ Processing epoch 9
 Process finished with exit code 0
 
 Note: Download the Movie Recommendations.csv file to view predicted ratings with titles for all movies in the restricted dataset. 
+Arrival appears in the recommendations as this was an old output, since then the code has been updated so that no user rated movies appear in the predictions. 
