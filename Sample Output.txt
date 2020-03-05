@@ -1,4 +1,4 @@
-An example of the 'Movie Recommendation Generator.py' file's output 
+An example of the 'Movie Recommendation Generator.py' file's output
 
 Enter the number of movies you will rate
 5
@@ -84,5 +84,4 @@ Processing epoch 9
 
 Process finished with exit code 0
 
-
-Note: Download the Movie Recommendations.csv file to view predicted ratings with titles for all movies in the restricted dataset. 
+Note: Download the Movie Recommendations.csv file to view predicted ratings with titles for all movies in the restricted dataset.
