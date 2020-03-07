@@ -38,10 +38,10 @@ def find_recommendations(data, usr_pref, user_data, user_id):
     data_dr = Dataset.load_from_df(data[['userId', 'movieId', 'rating']], reader)
 
     # defining our model based on the parameters that yielded the lowest rmse while having the most efficient running time
-    # notice that we use n_factors=10 for two reasons, 1: it drastically reduces the amount of time to train the model.
-    # 2: it still results in high model accuracy, and reduces the dimension of the subspace being worked with in the SVD, providing
+    # notice that we use n_factors=15 for two reasons, 1: it drastically reduces the amount of time to train the model.
+    # 2: it still results in high model accuracy, and reduces the dimension of the subspace being worked with in the SVD (both movie and user latent factor value vectors become 'shorter', of a smaller dimension), providing
     # an efficient approximation [we get the most significant factors explaining a majority of user behaviour]
-    algo = surprise.SVD(n_factors=10, n_epochs=10, lr_all=0.03, reg_all=0.04, verbose=True)
+    algo = surprise.SVD(n_factors=15, n_epochs=10, lr_all=0.03, reg_all=0.04, verbose=True)
 
     # training the model on the dataset that now includes the users preferences
     algo.fit(data_dr.build_full_trainset())
