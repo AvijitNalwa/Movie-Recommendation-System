@@ -21,6 +21,8 @@ I use the ratings, and movies files. Though this original dataset is huge, I add
 
 # References
  I referred/used certain aspects of the following resources:
+
+http://theory.stanford.edu/~tim/s15/l/l9.pdf
  
 https://grouplens.org/datasets/movielens/latest/
  
